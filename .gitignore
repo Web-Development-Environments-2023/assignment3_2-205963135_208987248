@@ -4,4 +4,3 @@ node_modules
 .vscode
 #codes/routes/recipes.js
 #codes\routes\recipes.js
-routes/utils/MySql.js
