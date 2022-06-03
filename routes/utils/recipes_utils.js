@@ -1,4 +1,5 @@
 const axios = require("axios");
+const res = require("express/lib/response");
 require('dotenv').config();
 const api_domain = "https://api.spoonacular.com/recipes";
 
@@ -81,18 +82,34 @@ async function getRecipesPreview(recipes_ids_list) {
         promises.push(getRecipeInformation(id));
     });
     let info_res = await Promise.all(promises);
-    info_res.map((recp)=>{console.log(recp.data)});
-    console.log(info_res);
+    // info_res.map((recp)=>{console.log(recp.data)});
+    // console.log(info_res);
     return extractPreviewRecipeDetails(info_res);
   }
-  
-getRecipesPreview(["663559","642582","655705","652100"]);
+
+// (async ()=>{
+// try{
+
+//     let bodyapi = await axios.get('https://api.spoonacular.com/recipes/663559/information?includeNutrition=false&apiKey=211dccfa858d4009a88d518ac82b23b2')
+//     console.log(bodyapi.data) // response
+//     } catch(error){
+//         console.error(error)
+//     }
+// })
+
+// let bodyapi =  axios.get('https://api.spoonacular.com/recipes/663559/information?includeNutrition=false&apiKey=211dccfa858d4009a88d518ac82b23b2')
+
+
+
+// getRecipesPreview(["663559","642582","655705","652100"]);
+
   
 
 
 
 exports.getRecipeDetails = getRecipeDetails;
 exports.addRecipe = addRecipe;
+exports.getRecipesPreview = getRecipesPreview;
 
 
 

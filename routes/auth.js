@@ -19,9 +19,9 @@ router.post("/Register", async (req, res, next) => {
       profilePic: req.body.profilePic
     }
     let users = [];
-    users = await DButils.execQuery("SELECT username from users");
+    users = await DButils.execQuery("SELECT userName from users");
 
-    if (users.find((x) => x.username === user_details.username))
+    if (users.find((x) => x.userName === user_details.username))
       throw { status: 409, message: "Username taken" };
 
     // add the new username
@@ -30,8 +30,8 @@ router.post("/Register", async (req, res, next) => {
       parseInt(process.env.bcrypt_saltRounds)
     );
     await DButils.execQuery(
-      `INSERT INTO users VALUES ('${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
-      '${user_details.country}', '${hash_password}', '${user_details.email}')`
+      `INSERT INTO users VALUES ('${user_details.username}', '${hash_password}', '${user_details.firstname}', '${user_details.lastname}',
+      '${user_details.email}', '${user_details.country}')`
     );
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {
@@ -42,8 +42,8 @@ router.post("/Register", async (req, res, next) => {
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
-    const users = await DButils.execQuery("SELECT username FROM users");
-    if (!users.find((x) => x.username === req.body.username))
+    const users = await DButils.execQuery("SELECT userName FROM users");
+    if (!users.find((x) => x.userName === req.body.username))
       throw { status: 401, message: "Username or Password incorrect" };
 
     // check that the password is correct
@@ -58,7 +58,7 @@ router.post("/Login", async (req, res, next) => {
     }
 
     // Set cookie
-    req.session.user_id = user.user_id;
+    req.session.userName = user.userName;
 
 
     // return cookie
