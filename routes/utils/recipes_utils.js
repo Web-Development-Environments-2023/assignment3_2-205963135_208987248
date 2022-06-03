@@ -1,4 +1,5 @@
 const axios = require("axios");
+require('dotenv').config();
 const api_domain = "https://api.spoonacular.com/recipes";
 
 
