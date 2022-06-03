@@ -26,11 +26,7 @@ async function getMyRecipes(userName){
     return recipes_id;
 }
 
-async function addRecipe(recipeId,createDate,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain)
-{
-    await DButils.execQuery(`insert into Recipes values ('${recipeId}',${createDate},${glutenFree},'${insturctions}'
-    ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegeterain})`);
-}
+
 
 async function addWatchedRecipe(userName, recipeId)
 {
@@ -46,12 +42,12 @@ async function getAllWatchedRecipes(userName){
 
 
 
+
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.saveFamilyRecipe = saveFamilyRecipe;
 exports.getFamilyRecipes = getFamilyRecipes;
 exports.saveMyRecipe = saveMyRecipe;
 exports.getMyRecipes = getMyRecipes;
-exports.addRecipe = addRecipe;
 exports.addWatchedRecipe = addWatchedRecipe;
 exports.getAllWatchedRecipes = getAllWatchedRecipes;
