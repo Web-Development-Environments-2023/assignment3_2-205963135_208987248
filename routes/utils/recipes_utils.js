@@ -96,9 +96,31 @@ async function getRecipesPreview(recipes_ids_list) {
     return extractPreviewRecipeDetails(info_res);
   }
 
+async function getRandomRecipes(){
+    const response = await axios.get(`${api_domain}/random`,{
+        params: {
+            number: 12,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+    return response;
+}
+
+async function getRandom3Recipes(){
+    let random_list = await getRandomRecipes();
+    let filtered_random_list = random_list.data.recipes.filter((random) => (random != undefined) && (random.recipeId != "") && (random.image != "") && (random.instructions != ""))
+    if (filtered_random_list.length < 3 ){
+        return getRandom3Recipes();
+    }
+    return extractPreviewRecipeDetails([filtered_random_list[0],filtered_random_list[1], filtered_random_list[2]]);
+}
+
+
 exports.getRecipeDetails = getRecipeDetails;
 exports.addRecipe = addRecipe;
 exports.getRecipesPreview = getRecipesPreview;
+exports.getRandomRecipes = getRandomRecipes;
+exports.getRandom3Recipes = getRandom3Recipes;
 
 
 

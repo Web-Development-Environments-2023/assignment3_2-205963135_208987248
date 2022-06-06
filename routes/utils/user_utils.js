@@ -30,8 +30,7 @@ async function addWatchedRecipe(userName, recipeId){
     let watchedRecipes = await DButils.execQuery(`select * from WatchedLogs where userName='${userName}' and recipeId='${recipeId}'`);
     if(watchedRecipes.length == 0){
         await DButils.execQuery(`insert into WatchedLogs values ('${userName}','${recipeId}')`);
-    }
-    
+    }   
 }
 
 async function getAllWatchedRecipes(userName){
@@ -40,9 +39,16 @@ async function getAllWatchedRecipes(userName){
 }
 
 async function getAllUsers(){
-    const recipes_id = await DButils.execQuery('select * from users');
-    return recipes_id;
+    const allUsers = await DButils.execQuery('select * from users');
+    return allUsers;
 }
+
+// async function get3LastWatched(){
+//     const allWatchedRecipes = getAllWatchedRecipes();
+
+// }
+
+
 
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
