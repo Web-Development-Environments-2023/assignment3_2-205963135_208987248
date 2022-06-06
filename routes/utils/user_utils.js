@@ -29,7 +29,10 @@ async function getMyRecipes(userName){
 async function addWatchedRecipe(userName, recipeId){
     let watchedRecipes = await DButils.execQuery(`select * from WatchedLogs where userName='${userName}' and recipeId='${recipeId}'`);
     if(watchedRecipes.length == 0){
-        await DButils.execQuery(`insert into WatchedLogs values ('${userName}','${recipeId}')`);
+        await DButils.execQuery(`insert into WatchedLogs (userName, recipeId, watchedDateTime) values ('${userName}','${recipeId}', NOW())`);
+    }
+    else{
+        await DButils.execQuery(`UPDATE WatchedLogs SET watchedDateTime = NOW() WHERE recipeId='${recipeId}' and userName='${userName}';`);
     }
     
 }
