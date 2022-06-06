@@ -16,7 +16,10 @@ router.get("/details/:recipeId/:userName", async (req, res, next) => {
     // console.log(user_name);
     const recipe = await recipes_utils.getRecipeDetails(recipe_id);
     res.send(recipe);
-    // user_utils.addWatchedRecipe(user_name, recipe_id);
+    //todo add recipe to db and then to watched
+    await recipes_utils.addRecipe(recipe.id, recipe.glutenFree, recipe.instructions, recipe.image, recipe.popularity, recipe.readyInMinutes,
+      recipe.title, recipe.vegan, recipe.vegetarian, recipe.servings, recipe.extendedIngredients)
+    await user_utils.addWatchedRecipe(user_name, recipe_id);
   } catch (error) {
     next(error);
   }

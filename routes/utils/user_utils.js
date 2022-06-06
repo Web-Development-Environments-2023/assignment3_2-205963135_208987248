@@ -26,11 +26,12 @@ async function getMyRecipes(userName){
     return recipes_id;
 }
 
-
-
-async function addWatchedRecipe(userName, recipeId)
-{
-    await DButils.execQuery(`insert into WatchedLogs values ('${userName}','${recipeId}')`);
+async function addWatchedRecipe(userName, recipeId){
+    let watchedRecipes = await DButils.execQuery(`select * from WatchedLogs where userName='${userName}' and recipeId='${recipeId}'`);
+    if(watchedRecipes.length == 0){
+        await DButils.execQuery(`insert into WatchedLogs values ('${userName}','${recipeId}')`);
+    }
+    
 }
 
 async function getAllWatchedRecipes(userName){
@@ -38,10 +39,10 @@ async function getAllWatchedRecipes(userName){
     return recipes_id;
 }
 
-
-
-
-
+async function getAllUsers(){
+    const recipes_id = await DButils.execQuery('select * from users');
+    return recipes_id;
+}
 
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
@@ -51,3 +52,4 @@ exports.saveMyRecipe = saveMyRecipe;
 exports.getMyRecipes = getMyRecipes;
 exports.addWatchedRecipe = addWatchedRecipe;
 exports.getAllWatchedRecipes = getAllWatchedRecipes;
+exports.getAllUsers = getAllUsers;

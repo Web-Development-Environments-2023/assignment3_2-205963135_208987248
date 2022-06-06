@@ -2,7 +2,7 @@ const axios = require("axios");
 const res = require("express/lib/response");
 require('dotenv').config();
 const api_domain = "https://api.spoonacular.com/recipes";
-
+const DButils = require("./DButils");
 
 
 /**
@@ -24,8 +24,8 @@ async function getRecipeInformation(recipe_id) {
 
 async function getRecipeDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
-    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
-
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, instructions, servings, extendedIngredients } = recipe_info.data;
+    //todo add extendedIngredients, servings
     return {
         id: id,
         title: title,
@@ -35,14 +35,23 @@ async function getRecipeDetails(recipe_id) {
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree,
-        
+        instructions: instructions,
+        servings: servings,
+        extendedIngredients: extendedIngredients,
     }
 }
 
-async function addRecipe(recipeId,createDate,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain)
-{
-    await DButils.execQuery(`insert into Recipes values ('${recipeId}',${createDate},${glutenFree},'${insturctions}'
-    ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegeterain})`);
+async function addRecipe(recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,servings,extendedIngredients){
+    let recipes = await DButils.execQuery(`select recipeId from Recipes where recipeId='${recipeId}'`);
+    if(recipes.length == 0){
+        let instructions = JSON.stringify(extendedIngredients).replaceAll("'","");
+        await DButils.execQuery(`insert into Recipes (recipeId,createDate,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,extendedIngredients,servings) values ('${recipeId}',NOW(),${glutenFree},'${insturctions}'
+    ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegeterain}, '${instructions}'
+    ,${servings})`);
+    }
+    else if((recipes[0].recipeId = recipeId)){
+        await DButils.execQuery(`UPDATE Recipes SET createDate = NOW() WHERE recipeId='${recipeId}';`);
+    }
 }
 
 function extractPreviewRecipeDetails(recipes_info) {
@@ -86,26 +95,6 @@ async function getRecipesPreview(recipes_ids_list) {
     // console.log(info_res);
     return extractPreviewRecipeDetails(info_res);
   }
-
-// (async ()=>{
-// try{
-
-//     let bodyapi = await axios.get('https://api.spoonacular.com/recipes/663559/information?includeNutrition=false&apiKey=211dccfa858d4009a88d518ac82b23b2')
-//     console.log(bodyapi.data) // response
-//     } catch(error){
-//         console.error(error)
-//     }
-// })
-
-// let bodyapi =  axios.get('https://api.spoonacular.com/recipes/663559/information?includeNutrition=false&apiKey=211dccfa858d4009a88d518ac82b23b2')
-
-
-
-// getRecipesPreview(["663559","642582","655705","652100"]);
-
-  
-
-
 
 exports.getRecipeDetails = getRecipeDetails;
 exports.addRecipe = addRecipe;
