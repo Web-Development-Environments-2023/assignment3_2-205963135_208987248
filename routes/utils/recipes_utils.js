@@ -45,7 +45,7 @@ async function addRecipe(recipeId,glutenFree,insturctions,picture,popularity,pre
     let recipes = await DButils.execQuery(`select recipeId from Recipes where recipeId='${recipeId}'`);
     if(recipes.length == 0){
         let instructions = JSON.stringify(extendedIngredients).replaceAll("'","");
-        await DButils.execQuery(`insert into Recipes (recipeId,createDate,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,extendedIngredients,servings) values ('${recipeId}',NOW(),${glutenFree},'${insturctions}'
+        await DButils.execQuery(`insert into Recipes (recipeId,createDate,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,ingredients,servings) values ('${recipeId}',NOW(),${glutenFree},'${insturctions}'
     ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegeterain}, '${instructions}'
     ,${servings})`);
     }
