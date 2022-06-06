@@ -9,10 +9,10 @@ router.get("/", (req, res) => res.send("im here"));
 /**
  * This path returns a full details of a recipe by its id
  */
-router.get("/details/:recipeId/:userName", async (req, res, next) => {
+router.post("/details", async (req, res, next) => {
   try {
-    let recipe_id = (req.params.recipeId).trim()
-    let user_name = (req.params.userName).trim()
+    let recipe_id = (req.body.recipeId).trim()
+    let user_name = (req.body.userName).trim()
     // console.log(user_name);
     const recipe = await recipes_utils.getRecipeDetails(recipe_id);
     res.send(recipe);
