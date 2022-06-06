@@ -37,8 +37,8 @@ async function addWatchedRecipe(userName, recipeId){
     
 }
 
-async function getAllWatchedRecipes(userName){
-    const recipes_id = await DButils.execQuery(`select recipeId from WatchedLogs where userName='${userName}'`);
+async function get3WatchedRecipes(userName){
+    const recipes_id = await DButils.execQuery(`select top 3 recipeId from WatchedLogs where userName='${userName}' order by watchedDateTime desc`);
     return recipes_id;
 }
 
@@ -47,10 +47,7 @@ async function getAllUsers(){
     return allUsers;
 }
 
-// async function get3LastWatched(){
-//     const allWatchedRecipes = getAllWatchedRecipes();
 
-// }
 
 
 
@@ -61,5 +58,5 @@ exports.getFamilyRecipes = getFamilyRecipes;
 exports.saveMyRecipe = saveMyRecipe;
 exports.getMyRecipes = getMyRecipes;
 exports.addWatchedRecipe = addWatchedRecipe;
-exports.getAllWatchedRecipes = getAllWatchedRecipes;
 exports.getAllUsers = getAllUsers;
+exports.get3WatchedRecipes = get3WatchedRecipes;

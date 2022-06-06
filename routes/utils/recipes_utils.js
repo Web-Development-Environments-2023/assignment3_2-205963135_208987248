@@ -112,12 +112,28 @@ async function getRandom3Recipes(){
     return extractPreviewRecipeDetails([filtered_random_list[0],filtered_random_list[1], filtered_random_list[2]]);
 }
 
+async function searchRecipes(querySearch,numberSearch,cuisineSearch,dietSearch,intoleranceSearch){
+    const response = await axios.get(`${api_domain}/recipes/complexSearch`,{
+        params: {
+            query: querySearch,
+            number: numberSearch,
+            cuisine: cuisineSearch,
+            diet: dietSearch,
+            intolerance: intoleranceSearch,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+    return response;
+}
+
+
 
 exports.getRecipeDetails = getRecipeDetails;
 exports.addRecipe = addRecipe;
 exports.getRecipesPreview = getRecipesPreview;
 exports.getRandomRecipes = getRandomRecipes;
 exports.getRandom3Recipes = getRandom3Recipes;
+exports.searchRecipes = searchRecipes;
 
 
 

@@ -34,4 +34,27 @@ router.post("/previewDetails", async (req, res, next) => {
   }
 });
 
+router.get("/random", async (req, res, next) => {
+  try {
+    const recipes = await recipes_utils.getRandom3Recipes();
+    res.send(recipes);
+  } catch (error) {
+    next(error);
+  }
+})
+
+router.post("/search", async (req, res, next) => {
+  try {
+    let querySearch = (req.body.querySearch);
+    let numberSearch = (req.body.numberSearch);
+    let cuisineSearch = (req.body.cuisineSearch);
+    let dietSearch = (req.body.dietSearch);
+    let intoleranceSearch = (req.body.intoleranceSearch);
+    const recipes = await recipes_utils.searchRecipes(querySearch, numberSearch, cuisineSearch, dietSearch, intoleranceSearch);
+    res.send(recipes);
+  } catch (error) {
+    next(error);
+  }
+})
+
 module.exports = router;
