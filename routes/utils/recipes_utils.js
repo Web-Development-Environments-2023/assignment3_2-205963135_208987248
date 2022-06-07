@@ -41,10 +41,10 @@ async function getRecipeDetails(recipe_id) {
     }
 }
 
-async function addRecipe(recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,servings,extendedIngredients){
+async function addRecipe(recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,servings,ingredients){
     let recipes = await DButils.execQuery(`select recipeId from Recipes where recipeId='${recipeId}'`);
     if(recipes.length == 0){
-        let instructions = JSON.stringify(extendedIngredients).replaceAll("'","");
+        let instructions = JSON.stringify(ingredients).replaceAll("'","");
         await DButils.execQuery(`insert into Recipes (recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,ingredients,servings) values ('${recipeId}',${glutenFree},'${insturctions}'
     ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegeterain}, '${instructions}'
     ,${servings})`);
