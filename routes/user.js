@@ -85,11 +85,10 @@ router.get('/favorites', async (req,res,next) => {
 router.get('/family', async (req,res,next) => {
   try{
     const userName = req.session.userName;
-    let favorite_recipes = {};
     const recipes_id = await user_utils.getFamilyRecipes(userName);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipeId)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    const results = await recipe_utils.getLocalRecipesPreview(recipes_id_array);
     res.status(200).send(results);
   } catch(error){
     next(error); 
@@ -129,7 +128,6 @@ router.get('/family', async (req,res,next) => {
 router.get('/my', async (req,res,next) => {
   try{
     const userName = req. session.userName;
-    let favorite_recipes = {};
     const recipes_id = await user_utils.getMyRecipes(userName);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipeId)); //extracting the recipe ids into array

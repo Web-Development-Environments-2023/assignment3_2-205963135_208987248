@@ -51,8 +51,8 @@ async function addRecipe(recipeId,glutenFree,insturctions,picture,popularity,pre
         else{
             instructions = "";
         }
-        await DButils.execQuery(`insert into danamaordb.Recipes (recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,ingredients,servings) values ('${recipeId}',${glutenFree},'${insturctions}'
-    ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegeterain}, '${instructions}'
+        await DButils.execQuery(`insert into Recipes (recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,ingredients,servings) values ('${recipeId}',${glutenFree},'${insturctions}'
+    ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegetarian}, '${instructions}'
     ,${servings})`);
     }
 }
@@ -91,28 +91,28 @@ function extractPreviewRecipeDetails(recipes_info) {
     return recipes_info.map((recipe_info) => {
         //check the data type so it can work with diffrent types of data
         let data = recipe_info;
-        if (recipe_info.data) {
-            data = recipe_info.data;
+        if (recipe_info.length > 0) {
+            data = recipe_info[0];
         }
         const {
-            id,
-            title,
-            readyInMinutes,
-            image,
-            aggregateLikes,
+            recipeId,
+            recipeName,
+            preparationTime,
+            picture,
+            popularity,
             vegan,
             vegetarian,
             glutenFree,
         } = data;
         return {
-            id: id,
-            title: title,
-            image: image,
-            readyInMinutes: readyInMinutes,
-            popularity: aggregateLikes,
-            vegan: vegan,
-            vegetarian: vegetarian,
-            glutenFree: glutenFree
+            id: recipeId,
+            title: recipeName,
+            image: picture,
+            readyInMinutes: preparationTime,
+            popularity: popularity,
+            vegan: Boolean(vegan),
+            vegetarian: Boolean(vegetarian),
+            glutenFree: Boolean(glutenFree)
         }
     })
   }
