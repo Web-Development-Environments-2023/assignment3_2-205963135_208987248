@@ -37,17 +37,17 @@ async function getMyRecipes(userName){
 }
 
 async function addWatchedRecipe(userName, recipeId){
-    let watchedRecipes = await DButils.execQuery(`select * from danamaordb.WatchedLogs where userName='${userName}' and recipeId='${recipeId}'`);
+    let watchedRecipes = await DButils.execQuery(`select * from danamaordb.Watchedlogs where userName='${userName}' and recipeId='${recipeId}'`);
     if(watchedRecipes.length == 0){
-        await DButils.execQuery(`insert into danamaordb.WatchedLogs (userName, recipeId, watchedDateTime) values ('${userName}','${recipeId}', NOW())`);
+        await DButils.execQuery(`insert into danamaordb.Watchedlogs (userName, recipeId, watchedDateTime) values ('${userName}','${recipeId}', NOW())`);
     }
     else{
-        await DButils.execQuery(`UPDATE danamaordb.WatchedLogs SET watchedDateTime = NOW() WHERE recipeId='${recipeId}' and userName='${userName}';`);
+        await DButils.execQuery(`UPDATE danamaordb.Watchedlogs SET watchedDateTime = NOW() WHERE recipeId='${recipeId}' and userName='${userName}';`);
     }
 }
 
 async function get3WatchedRecipes(userName){
-    const recipes_id = await DButils.execQuery(`select top 3 recipeId from danamaordb.WatchedLogs where userName='${userName}' order by watchedDateTime desc`);
+    const recipes_id = await DButils.execQuery(`select recipeId from danamaordb.Watchedlogs where userName='${userName}' order by watchedDateTime desc limit 3`);
     return recipes_id;
 }
 
