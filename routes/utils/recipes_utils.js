@@ -60,7 +60,7 @@ async function addRecipe(recipeId,glutenFree,insturctions,picture,popularity,pre
 function extractPreviewRecipeDetails(recipes_info) {
     return recipes_info.map((recipe_info) => {
         //check the data type so it can work with diffrent types of data
-        let data = recipe_info;
+        let data =  recipe_info;
         if (recipe_info.data) {
             data = recipe_info.data;
         }
@@ -87,6 +87,35 @@ function extractPreviewRecipeDetails(recipes_info) {
     })
   }
   
+  function extractPreviewRecipeDetailsLocal(recipes_info) {
+    return recipes_info.map((recipe_info) => {
+        //check the data type so it can work with diffrent types of data
+        let data = recipe_info;
+        if (recipe_info.data) {
+            data = recipe_info.data;
+        }
+        const {
+            id,
+            title,
+            readyInMinutes,
+            image,
+            aggregateLikes,
+            vegan,
+            vegetarian,
+            glutenFree,
+        } = data;
+        return {
+            id: id,
+            title: title,
+            image: image,
+            readyInMinutes: readyInMinutes,
+            popularity: aggregateLikes,
+            vegan: vegan,
+            vegetarian: vegetarian,
+            glutenFree: glutenFree
+        }
+    })
+  }
 
 async function getRecipesPreview(recipes_ids_list) {
     let promises = [];
@@ -117,7 +146,7 @@ async function getLocalRecipesPreview(recipes_ids_list) {
     let info_res = await Promise.all(promises);
     // info_res.map((recp)=>{console.log(recp.data)});
     // console.log(info_res);
-    return extractPreviewRecipeDetails(info_res);
+    return extractPreviewRecipeDetailsLocal(info_res);
   }
 
 async function getRandomRecipes(){
@@ -153,8 +182,12 @@ async function searchRecipes(querySearch,numberSearch,cuisineSearch,dietSearch,i
     return response;
 }
 
+async function getRecipeInformationLocal(recipeId){
+    const recipes = await DButils.execQuery(`select * from danamaordb.recipes where recipeId='${recipeId}'`);
+    return recipes;
+}
 
-
+exports.getLocalRecipesPreview = getLocalRecipesPreview;
 exports.getRecipeDetails = getRecipeDetails;
 exports.addRecipe = addRecipe;
 exports.getRecipesPreview = getRecipesPreview;
