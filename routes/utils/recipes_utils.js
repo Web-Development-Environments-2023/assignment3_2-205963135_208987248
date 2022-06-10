@@ -37,14 +37,20 @@ async function getRecipeDetails(recipe_id) {
         glutenFree: glutenFree,
         instructions: instructions,
         servings: servings,
-        extendedIngredients: extendedIngredients,
+        ingredients: extendedIngredients,
     }
 }
 
 async function addRecipe(recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,servings,ingredients){
     let recipes = await DButils.execQuery(`select recipeId from Recipes where recipeId='${recipeId}'`);
     if(recipes.length == 0){
-        let instructions = JSON.stringify(ingredients).replaceAll("'","");
+        let instructions
+        if(ingredients != undefined){
+            instructions = JSON.stringify(ingredients).replaceAll("'","");
+        }
+        else{
+            instructions = "";
+        }
         await DButils.execQuery(`insert into Recipes (recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,ingredients,servings) values ('${recipeId}',${glutenFree},'${insturctions}'
     ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegeterain}, '${instructions}'
     ,${servings})`);
@@ -86,6 +92,27 @@ async function getRecipesPreview(recipes_ids_list) {
     let promises = [];
     recipes_ids_list.map((id) => {
         promises.push(getRecipeInformation(id));
+    });
+    let info_res = await Promise.all(promises);
+    // info_res.map((recp)=>{console.log(recp.data)});
+    // console.log(info_res);
+    return extractPreviewRecipeDetails(info_res);
+  }
+
+async function getRandomRecipes(){
+    const response = await axios.get(`${api_domain}/random`,{
+        params: {
+            number: 12,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+    return response;
+}
+
+async function getLocalRecipesPreview(recipes_ids_list) {
+    let promises = [];
+    recipes_ids_list.map((id) => {
+        promises.push(getRecipeInformationLocal(id));
     });
     let info_res = await Promise.all(promises);
     // info_res.map((recp)=>{console.log(recp.data)});

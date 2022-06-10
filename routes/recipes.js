@@ -18,7 +18,7 @@ router.post("/details", async (req, res, next) => {
     res.send(recipe);
     //todo add recipe to db and then to watched
     await recipes_utils.addRecipe(recipe.id, recipe.glutenFree, recipe.instructions, recipe.image, recipe.popularity, recipe.readyInMinutes,
-      recipe.title, recipe.vegan, recipe.vegetarian, recipe.servings, recipe.extendedIngredients)
+      recipe.title, recipe.vegan, recipe.vegetarian, recipe.servings, recipe.ingredients)
     await user_utils.addWatchedRecipe(user_name, recipe_id);
   } catch (error) {
     next(error);

@@ -53,7 +53,7 @@ router.post("/Login", async (req, res, next) => {
       )
     )[0];
 
-    if (!bcrypt.compareSync(req.body.password, user.password)) {
+    if (!(req.body.password === user.UserPassword)) {
       throw { status: 401, message: "Username or Password incorrect" };
     }
 

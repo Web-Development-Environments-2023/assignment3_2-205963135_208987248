@@ -44,7 +44,7 @@ router.get('/favorites', async (req,res,next) => {
     let favorite_recipes = {};
     const recipes_id = await user_utils.getFavoriteRecipes(userName);
     let recipes_id_array = [];
-    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    recipes_id.map((element) => recipes_id_array.push(element.recipeId)); //extracting the recipe ids into array
     const results = await recipe_utils.getRecipesPreview(recipes_id_array);
     res.status(200).send(results);
   } catch(error){
@@ -52,7 +52,92 @@ router.get('/favorites', async (req,res,next) => {
   }
 });
 
+/**
+ * This path gets body with recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings
+ * ,ingredients and save this recipe in the recipe table and also in the family list of the logged-in user
+ */
+ router.post('/family', async (req,res,next) => {
+  try{
+    const userName = req.session.userName;
+    let rowNum = await user_utils.getNumOfFamilyRecipeRows(userName);
+    const recipe_id = userName+ '_' + "family"+ '_' + rowNum;
+    const glutenFree =  req.body.glutenFree;
+    const instructions =  req.body.instructions;
+    const picture =  req.body.image;
+    const popularity =  req.body.popularity;
+    const preparationTime =  req.body.readyInMinutes;
+    const recipeName =  req.body.title;
+    const vegan =  req.body.vegan;
+    const vegetarian =  req.body.vegetarian;
+    const servings =  req.body.servings;
+    const ingredients =  req.body.ingredients;
+    await recipe_utils.addRecipe(recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients);
+    await user_utils.saveFamilyRecipe(userName,recipe_id);
+    res.status(200).send("The Recipe successfully saved as family recipe");
+    } catch(error){
+    next(error);
+  }
+})
 
+/**
+ * This path returns the family recipes that were saved by the logged-in user
+ */
+router.get('/family', async (req,res,next) => {
+  try{
+    const userName = req.session.userName;
+    let favorite_recipes = {};
+    const recipes_id = await user_utils.getFamilyRecipes(userName);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipeId)); //extracting the recipe ids into array
+    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
 
+/**
+ * This path gets body with recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings
+ * ,ingredients and save this recipe in the recipe table and also in the my list of the logged-in user
+ */
+ router.post('/my', async (req,res,next) => {
+  try{
+    const userName = req.session.userName;
+    let rowNum = await user_utils.getNumOfMyRecipeRows(userName);
+    const recipe_id = userName+ '_' + "my"+ '_' + rowNum;
+    const glutenFree =  req.body.glutenFree;
+    const instructions =  req.body.instructions;
+    const picture =  req.body.image;
+    const popularity =  req.body.popularity;
+    const preparationTime =  req.body.readyInMinutes;
+    const recipeName =  req.body.title;
+    const vegan =  req.body.vegan;
+    const vegetarian =  req.body.vegetarian;
+    const servings =  req.body.servings;
+    const ingredients =  req.body.ingredients;
+    await recipe_utils.addRecipe(recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients);
+    await user_utils.saveMyRecipe(userName,recipe_id);
+    res.status(200).send("The Recipe successfully saved as my recipe");
+    } catch(error){
+    next(error);
+  }
+})
+
+/**
+ * This path returns the my recipes that were saved by the logged-in user
+ */
+router.get('/my', async (req,res,next) => {
+  try{
+    const userName = req.session.userName;
+    let favorite_recipes = {};
+    const recipes_id = await user_utils.getMyRecipes(userName);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipeId)); //extracting the recipe ids into array
+    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
 
 module.exports = router;
