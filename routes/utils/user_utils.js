@@ -66,10 +66,6 @@ async function getNumOfMyRecipeRows(userName){
     return rowsCounter[0].numberOfRows;
 }
 
-async function getRecipeInformationLocal(recipeId){
-    const rowsCounter = await DButils.execQuery(`select * from danamaordb.recipes where recipeId='${recipeId}'`);
-    return rowsCounter[0].numberOfRows;
-}
 
 exports.getNumOfMyRecipeRows = getNumOfMyRecipeRows;
 exports.getNumOfFamilyRecipeRows = getNumOfFamilyRecipeRows;
@@ -81,5 +77,4 @@ exports.saveMyRecipe = saveMyRecipe;
 exports.getMyRecipes = getMyRecipes;
 exports.addWatchedRecipe = addWatchedRecipe;
 exports.getAllUsers = getAllUsers;
-exports.get3WatchedRecipes = get3WatchedRecipes;
-exports.getRecipeInformationLocal = getRecipeInformationLocal;
+exports.get3WatchedRecipes = get3WatchedRecipes
