@@ -41,8 +41,8 @@ async function getRecipeDetails(recipe_id) {
     }
 }
 
-async function addRecipe(recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients){
-    let recipes = await DButils.execQuery(`select recipeId from Recipes where recipeId='${recipeId}'`);
+async function addRecipe(recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,servings,ingredients){
+    let recipes = await DButils.execQuery(`select recipeId from danamaordb.Recipes where recipeId='${recipeId}'`);
     if(recipes.length == 0){
         let instructions
         if(ingredients != undefined){
@@ -194,7 +194,6 @@ exports.getRecipesPreview = getRecipesPreview;
 exports.getRandomRecipes = getRandomRecipes;
 exports.getRandom3Recipes = getRandom3Recipes;
 exports.searchRecipes = searchRecipes;
-
 
 
 
