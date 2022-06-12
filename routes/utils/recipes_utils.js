@@ -206,6 +206,29 @@ async function checkIfFamilyRecipeExists(glutenFree,instructions,picture,popular
     return recipes;
 }
 
+async function getNumOfMealRecipeRows(userName){
+    const rowsCounter = await DButils.execQuery(`select count(*) as numberOfRows from danamaordb.Meal where userName='${userName}'`);
+    return rowsCounter[0].numberOfRows;
+}
+
+async function addMealRecipes(userName, recipeId){
+    let num_of_rows = await getNumOfMealRecipeRows(userName);
+    let watchedRecipes = await DButils.execQuery(`select * from danamaordb.meals where userName='${userName}' and recipeId='${recipeId}'`);
+    await DButils.execQuery(`insert into danamaordb.meals (userName, recipeId, orderRecipe) values ('${userName}','${recipeId}', ${num_of_rows})`);
+}
+
+async function getMealRecipes(userName){
+    const recipes_id = await DButils.execQuery(`select recipeId from danamaordb.Meal where userName='${userName}' order by orderRecipe asc `);
+    return recipes_id;
+}
+
+async function changeMealRecipes(userName, recipes_list){
+    for (i in Range(recipes_list.length))
+    {
+
+    }
+}
+
 
 exports.getLocalRecipesPreview = getLocalRecipesPreview;
 exports.getRecipeDetails = getRecipeDetails;
@@ -216,6 +239,9 @@ exports.getRandom3Recipes = getRandom3Recipes;
 exports.searchRecipes = searchRecipes;
 exports.checkIfMyRecipeExists = checkIfMyRecipeExists;
 exports.checkIfFamilyRecipeExists = checkIfFamilyRecipeExists;
+exports.getMealRecipes = getMealRecipes;
+exports.changeMealRecipes =changeMealRecipes;
+exports.addMealRecipes = addMealRecipes;
 
 
 
