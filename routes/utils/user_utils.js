@@ -39,7 +39,8 @@ async function getMyRecipes(userName){
 async function addWatchedRecipe(userName, recipeId){
     let watchedRecipes = await DButils.execQuery(`select * from danamaordb.Watchedlogs where userName='${userName}' and recipeId='${recipeId}'`);
     if(watchedRecipes.length == 0){
-        await DButils.execQuery(`insert into danamaordb.Watchedlogs (userName, recipeId, watchedDateTime) values ('${userName}','${recipeId}', NOW())`);
+        let sql = `insert into danamaordb.Watchedlogs (userName, recipeId, watchedDateTime) values ('${userName}','${recipeId}', NOW())`;
+        await DButils.execQuery(sql);
     }
     else{
         await DButils.execQuery(`UPDATE danamaordb.Watchedlogs SET watchedDateTime = NOW() WHERE recipeId='${recipeId}' and userName='${userName}';`);

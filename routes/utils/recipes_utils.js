@@ -44,15 +44,16 @@ async function getRecipeDetails(recipe_id) {
 async function addRecipe(recipeId,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients,analyzedInstructions){
     let recipes = await DButils.execQuery(`select recipeId from danamaordb.Recipes where recipeId='${recipeId}'`);
     if(recipes.length == 0){
-        let ingredientsToIsert
+        let ingredientsToInsert
         if(ingredients != undefined){
-            ingredientsToIsert = JSON.stringify(ingredients).replaceAll("'","");
+            ingredientsToInsert = JSON.stringify(ingredients).replaceAll("'","");
         }
         else{
-            ingredientsToIsert = "";
+            ingredientsToInsert = "";
         }
+        analyzedInstructions = JSON.stringify(analyzedInstructions);
         await DButils.execQuery(`insert into Recipes (recipeId,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,ingredients,servings,analyzedInstructions) 
-        values ('${recipeId}',${glutenFree},'${instructions}' ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegetarian}, '${ingredientsToIsert}' ,${servings}, '${JSON.stringify(analyzedInstructions)}')`);
+        values ('${recipeId}',${glutenFree},'${instructions}' ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegetarian}, '${ingredientsToInsert}' ,${servings}, '${analyzedInstructions}')`);
     }
 }
 
@@ -205,25 +206,28 @@ async function checkIfFamilyRecipeExists(glutenFree,instructions,picture,popular
 }
 
 async function getNumOfMealRecipeRows(userName){
-    const rowsCounter = await DButils.execQuery(`select count(*) as numberOfRows from danamaordb.Meal where userName='${userName}'`);
+    const rowsCounter = await DButils.execQuery(`select count(*) as numberOfRows from danamaordb.meals where userName='${userName}'`);
     return rowsCounter[0].numberOfRows;
 }
 
 async function addMealRecipes(userName, recipeId){
-    let num_of_rows = await getNumOfMealRecipeRows(userName);
-    let watchedRecipes = await DButils.execQuery(`select * from danamaordb.meals where userName='${userName}' and recipeId='${recipeId}'`);
-    await DButils.execQuery(`insert into danamaordb.meals (userName, recipeId, orderRecipe) values ('${userName}','${recipeId}', ${num_of_rows})`);
+    let meals = await DButils.execQuery(`select * from danamaordb.meals where userName='${userName}' and recipeId='${recipeId}'`);
+    if(meals.length == 0){
+        let num_of_rows = await getNumOfMealRecipeRows(userName);
+        await DButils.execQuery(`insert into danamaordb.meals (userName, recipeId, orderRecipe) values ('${userName}','${recipeId}', ${num_of_rows})`);
+        return true;
+    }
+    return false;
 }
 
 async function getMealRecipes(userName){
-    const recipes_id = await DButils.execQuery(`select recipeId from danamaordb.Meal where userName='${userName}' order by orderRecipe asc `);
+    const recipes_id = await DButils.execQuery(`select recipeId from danamaordb.meals where userName='${userName}' order by orderRecipe asc `);
     return recipes_id;
 }
 
-async function changeMealRecipes(userName, recipes_list){
-    for (i in Range(recipes_list.length))
-    {
-
+async function changeMealRecipes(userName, recipes_and_order_list){
+    for (const [recipeId, orderRecipe] of recipes_and_order_list) {
+        await DButils.execQuery(`UPDATE meals SET orderRecipe = ${orderRecipe} WHERE userName = '${userName}' and recipeId = '${recipeId}'`);
     }
 }
 
@@ -245,6 +249,10 @@ async function getAnalyzedInstructionsFromDB(recipeId){
     return analyzedInstructions;
 }
 
+async function deleteMealRecipes(userName, recipeId){
+    await DButils.execQuery(`delete from danamaordb.meals where userName = '${userName}' and recipeId = '${recipeId}'`);
+}
+
 exports.getLocalRecipesPreview = getLocalRecipesPreview;
 exports.getRecipeDetails = getRecipeDetails;
 exports.addRecipe = addRecipe;
@@ -259,6 +267,7 @@ exports.changeMealRecipes =changeMealRecipes;
 exports.addMealRecipes = addMealRecipes;
 exports.getAnalyzedInstructions = getAnalyzedInstructions;
 exports.getAnalyzedInstructionsFromDB = getAnalyzedInstructionsFromDB;
+exports.deleteMealRecipes = deleteMealRecipes;
 
 
 
