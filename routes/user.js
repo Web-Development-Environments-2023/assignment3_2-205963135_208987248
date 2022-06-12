@@ -72,9 +72,10 @@ router.get('/favorites', async (req,res,next) => {
     const vegetarian =  req.body.vegetarian;
     const servings =  req.body.servings;
     const ingredients =  req.body.ingredients;
+    const analyzedInstructions =  req.body.analyzedInstructions;
     let recipes = await recipe_utils.checkIfFamilyRecipeExists(glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients,userName);
     if(recipes.length == 0){
-      await recipe_utils.addRecipe(recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients);
+      await recipe_utils.addRecipe(recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients,analyzedInstructions);
       await user_utils.saveFamilyRecipe(userName,recipe_id);
       res.status(200).send("The Recipe successfully saved as family recipe");
     }
@@ -121,9 +122,10 @@ router.get('/family', async (req,res,next) => {
     const vegetarian =  req.body.vegetarian;
     const servings =  req.body.servings;
     const ingredients =  req.body.ingredients;
+    const analyzedInstructions =  req.body.analyzedInstructions;
     let recipes = await recipe_utils.checkIfMyRecipeExists(glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients, userName);
     if(recipes.length == 0){
-      await recipe_utils.addRecipe(recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients);
+      await recipe_utils.addRecipe(recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients,analyzedInstructions);
       await user_utils.saveMyRecipe(userName,recipe_id);
       res.status(200).send("The Recipe successfully saved as my recipe");
     }

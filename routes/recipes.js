@@ -16,9 +16,11 @@ router.post("/details", async (req, res, next) => {
     // console.log(user_name);
     const recipe = await recipes_utils.getRecipeDetails(recipe_id);
     res.send(recipe);
+    let analyzedInstructions =  await recipes_utils.getAnalyzedInstructions(recipe_id);
+    analyzedInstructions = analyzedInstructions.data
     //todo add recipe to db and then to watched
     await recipes_utils.addRecipe(recipe.id, recipe.glutenFree, recipe.instructions, recipe.image, recipe.popularity, recipe.readyInMinutes,
-      recipe.title, recipe.vegan, recipe.vegetarian, recipe.servings, recipe.ingredients)
+      recipe.title, recipe.vegan, recipe.vegetarian, recipe.servings, recipe.ingredients, analyzedInstructions)
     await user_utils.addWatchedRecipe(user_name, recipe_id);
   } catch (error) {
     next(error);
@@ -56,5 +58,18 @@ router.post("/search", async (req, res, next) => {
     next(error);
   }
 })
+
+/**
+ * This path returns a full details of a recipe by its id
+ */
+ router.post("/analyzedInstructions", async (req, res, next) => {
+  try {
+    let recipe_id = (req.body.recipeId).trim()
+    let analyzedInstructions =  await recipes_utils.getAnalyzedInstructionsFromDB(recipe_id);
+    res.send(analyzedInstructions);
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;
