@@ -41,7 +41,7 @@ async function getRecipeDetails(recipe_id) {
     }
 }
 
-async function addRecipe(recipeId,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients){
+async function addRecipe(recipeId,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients,analyzedInstructions){
     let recipes = await DButils.execQuery(`select recipeId from danamaordb.Recipes where recipeId='${recipeId}'`);
     if(recipes.length == 0){
         let ingredientsToIsert
@@ -51,10 +51,8 @@ async function addRecipe(recipeId,glutenFree,instructions,picture,popularity,pre
         else{
             ingredientsToIsert = "";
         }
-        // await getAnalyzedInstructions(recipeId)
-        await DButils.execQuery(`insert into Recipes (recipeId,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,ingredients,servings) values ('${recipeId}',${glutenFree},'${instructions}'
-    ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegetarian}, '${ingredientsToIsert}'
-    ,${servings})`);
+        await DButils.execQuery(`insert into Recipes (recipeId,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,ingredients,servings,analyzedInstructions) 
+        values ('${recipeId}',${glutenFree},'${instructions}' ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegetarian}, '${ingredientsToIsert}' ,${servings}, '${JSON.stringify(analyzedInstructions)}')`);
     }
 }
 
@@ -206,6 +204,23 @@ async function checkIfFamilyRecipeExists(glutenFree,instructions,picture,popular
     return recipes;
 }
 
+async function getAnalyzedInstructions(recipeId){
+    const response = await axios.get(`${api_domain}/${recipeId}/analyzedInstructions`,{
+        params: {
+            stepBreakdown: true,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+    return response;
+}
+
+async function getAnalyzedInstructionsFromDB(recipeId){
+    let sql = `select analyzedInstructions from danamaordb.recipes where recipeId = '${recipeId}'`;
+    let analyzedInstructions = await DButils.execQuery(sql);
+    analyzedInstructions = analyzedInstructions[0].analyzedInstructions;
+    analyzedInstructions = JSON.parse(analyzedInstructions);
+    return analyzedInstructions;
+}
 
 exports.getLocalRecipesPreview = getLocalRecipesPreview;
 exports.getRecipeDetails = getRecipeDetails;
@@ -216,6 +231,8 @@ exports.getRandom3Recipes = getRandom3Recipes;
 exports.searchRecipes = searchRecipes;
 exports.checkIfMyRecipeExists = checkIfMyRecipeExists;
 exports.checkIfFamilyRecipeExists = checkIfFamilyRecipeExists;
+exports.getAnalyzedInstructions = getAnalyzedInstructions;
+exports.getAnalyzedInstructionsFromDB = getAnalyzedInstructionsFromDB;
 
 
 
