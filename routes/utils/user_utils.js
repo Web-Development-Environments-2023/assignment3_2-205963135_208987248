@@ -66,6 +66,15 @@ async function getNumOfMyRecipeRows(userName){
     return rowsCounter[0].numberOfRows;
 }
 
+async function checkIfRecipeInUserFamily(userName, recipeId){
+    const recipes = await DButils.execQuery(`select * from danamaordb.MyFamilyRecipes where userName='${userName}' and recipeId='${recipeId}'`);
+    return recipes;
+}
+
+async function checkIfRecipeInUserMy(userName, recipeId){
+    const recipes = await DButils.execQuery(`select * from danamaordb.MyRecipes where userName='${userName}' and recipeId='${recipeId}'`);
+    return recipes;
+}
 
 exports.getNumOfMyRecipeRows = getNumOfMyRecipeRows;
 exports.getNumOfFamilyRecipeRows = getNumOfFamilyRecipeRows;
@@ -78,3 +87,5 @@ exports.getMyRecipes = getMyRecipes;
 exports.addWatchedRecipe = addWatchedRecipe;
 exports.getAllUsers = getAllUsers;
 exports.get3WatchedRecipes = get3WatchedRecipes
+exports.checkIfRecipeInUserFamily = checkIfRecipeInUserFamily
+exports.checkIfRecipeInUserMy = checkIfRecipeInUserMy

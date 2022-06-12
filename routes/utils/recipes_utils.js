@@ -41,18 +41,19 @@ async function getRecipeDetails(recipe_id) {
     }
 }
 
-async function addRecipe(recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegeterain,servings,ingredients){
+async function addRecipe(recipeId,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients){
     let recipes = await DButils.execQuery(`select recipeId from danamaordb.Recipes where recipeId='${recipeId}'`);
     if(recipes.length == 0){
-        let instructions
+        let ingredientsToIsert
         if(ingredients != undefined){
-            instructions = JSON.stringify(ingredients).replaceAll("'","");
+            ingredientsToIsert = JSON.stringify(ingredients).replaceAll("'","");
         }
         else{
-            instructions = "";
+            ingredientsToIsert = "";
         }
-        await DButils.execQuery(`insert into Recipes (recipeId,glutenFree,insturctions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,ingredients,servings) values ('${recipeId}',${glutenFree},'${insturctions}'
-    ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegetarian}, '${instructions}'
+        // await getAnalyzedInstructions(recipeId)
+        await DButils.execQuery(`insert into Recipes (recipeId,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,ingredients,servings) values ('${recipeId}',${glutenFree},'${instructions}'
+    ,'${picture}',${popularity},${preparationTime},'${recipeName}',${vegan},${vegetarian}, '${ingredientsToIsert}'
     ,${servings})`);
     }
 }
@@ -169,7 +170,7 @@ async function getRandom3Recipes(){
 }
 
 async function searchRecipes(querySearch,numberSearch,cuisineSearch,dietSearch,intoleranceSearch){
-    const response = await axios.get(`${api_domain}/recipes/complexSearch`,{
+    const response = await axios.get(`${api_domain}/complexSearch`,{
         params: {
             query: querySearch,
             number: numberSearch,
@@ -179,13 +180,32 @@ async function searchRecipes(querySearch,numberSearch,cuisineSearch,dietSearch,i
             apiKey: process.env.spooncular_apiKey
         }
     });
-    return response;
+    return response.data.results;
 }
 
 async function getRecipeInformationLocal(recipeId){
     const recipes = await DButils.execQuery(`select * from danamaordb.recipes where recipeId='${recipeId}'`);
     return recipes;
 }
+
+async function checkIfMyRecipeExists(glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients, userName){
+    let sql = `select * from danamaordb.recipes where glutenFree=${glutenFree} and
+    instructions='${instructions}' and picture='${picture}' and popularity=${popularity} and preparationTime=${preparationTime} 
+    and recipeName='${recipeName}' and vegan=${vegan} and vegetarian=${vegetarian} and servings=${servings} 
+    and ingredients='${JSON.stringify(ingredients).replaceAll("'","")}' and recipeId like '${userName}_my%'`;
+    const recipes = await DButils.execQuery(sql);
+    return recipes;
+}
+
+async function checkIfFamilyRecipeExists(glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients, userName){
+    let sql = `select * from danamaordb.recipes where glutenFree=${glutenFree} and
+    instructions='${instructions}' and picture='${picture}' and popularity=${popularity} and preparationTime=${preparationTime} 
+    and recipeName='${recipeName}' and vegan=${vegan} and vegetarian=${vegetarian} and servings=${servings} 
+    and ingredients='${JSON.stringify(ingredients).replaceAll("'","")}' and recipeId like '${userName}_family%'`;
+    const recipes = await DButils.execQuery(sql);
+    return recipes;
+}
+
 
 exports.getLocalRecipesPreview = getLocalRecipesPreview;
 exports.getRecipeDetails = getRecipeDetails;
@@ -194,6 +214,8 @@ exports.getRecipesPreview = getRecipesPreview;
 exports.getRandomRecipes = getRandomRecipes;
 exports.getRandom3Recipes = getRandom3Recipes;
 exports.searchRecipes = searchRecipes;
+exports.checkIfMyRecipeExists = checkIfMyRecipeExists;
+exports.checkIfFamilyRecipeExists = checkIfFamilyRecipeExists;
 
 
 

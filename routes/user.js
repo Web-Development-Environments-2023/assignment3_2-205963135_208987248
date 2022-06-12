@@ -3,6 +3,7 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipe_utils = require("./utils/recipes_utils");
+const { user } = require("pg/lib/defaults");
 
 /**
  * Authenticate all incoming requests by middleware
@@ -60,7 +61,7 @@ router.get('/favorites', async (req,res,next) => {
   try{
     const userName = req.session.userName;
     let rowNum = await user_utils.getNumOfFamilyRecipeRows(userName);
-    const recipe_id = userName+ '_' + "family"+ '_' + rowNum;
+    const recipe_id = userName + '_' + "family"+ '_' + rowNum;
     const glutenFree =  req.body.glutenFree;
     const instructions =  req.body.instructions;
     const picture =  req.body.image;
@@ -71,9 +72,15 @@ router.get('/favorites', async (req,res,next) => {
     const vegetarian =  req.body.vegetarian;
     const servings =  req.body.servings;
     const ingredients =  req.body.ingredients;
-    await recipe_utils.addRecipe(recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients);
-    await user_utils.saveFamilyRecipe(userName,recipe_id);
-    res.status(200).send("The Recipe successfully saved as family recipe");
+    let recipes = await recipe_utils.checkIfFamilyRecipeExists(glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients,userName);
+    if(recipes.length == 0){
+      await recipe_utils.addRecipe(recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients);
+      await user_utils.saveFamilyRecipe(userName,recipe_id);
+      res.status(200).send("The Recipe successfully saved as family recipe");
+    }
+    else{
+        res.status(400).send("This Recipe was already added to user family recipes");
+    }
     } catch(error){
     next(error);
   }
@@ -114,9 +121,15 @@ router.get('/family', async (req,res,next) => {
     const vegetarian =  req.body.vegetarian;
     const servings =  req.body.servings;
     const ingredients =  req.body.ingredients;
-    await recipe_utils.addRecipe(recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients);
-    await user_utils.saveMyRecipe(userName,recipe_id);
-    res.status(200).send("The Recipe successfully saved as my recipe");
+    let recipes = await recipe_utils.checkIfMyRecipeExists(glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients, userName);
+    if(recipes.length == 0){
+      await recipe_utils.addRecipe(recipe_id,glutenFree,instructions,picture,popularity,preparationTime,recipeName,vegan,vegetarian,servings,ingredients);
+      await user_utils.saveMyRecipe(userName,recipe_id);
+      res.status(200).send("The Recipe successfully saved as my recipe");
+    }
+    else{
+      res.status(400).send("This Recipe was already added to user my recipes");
+    }
     } catch(error){
     next(error);
   }
