@@ -19,7 +19,7 @@ router.post("/Register", async (req, res, next) => {
       profilePic: req.body.profilePic
     }
     let users = [];
-    users = await DButils.execQuery("SELECT userName from users");
+    users = await DButils.execQuery("SELECT userName from danamaordb.users");
 
     if (users.find((x) => x.userName === user_details.username))
       throw { status: 409, message: "Username taken" };
@@ -42,14 +42,14 @@ router.post("/Register", async (req, res, next) => {
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
-    const users = await DButils.execQuery("SELECT userName FROM users");
+    const users = await DButils.execQuery("SELECT userName FROM danamaordb.users");
     if (!users.find((x) => x.userName === req.body.username))
       throw { status: 401, message: "Username or Password incorrect" };
 
     // check that the password is correct
     const user = (
       await DButils.execQuery(
-        `SELECT * FROM users WHERE username = '${req.body.username}'`
+        `SELECT * FROM danamaordb.users WHERE username = '${req.body.username}'`
       )
     )[0];
 

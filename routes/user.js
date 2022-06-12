@@ -10,7 +10,7 @@ const { user } = require("pg/lib/defaults");
  */
 router.use(async function (req, res, next) {
   if (req.session && req.session.userName) {
-    DButils.execQuery("SELECT userName FROM users").then((users) => {
+    DButils.execQuery("SELECT userName FROM danamaordb.users").then((users) => {
       if (users.find((x) => x.userName === req.session.userName)) {
         req.userName = req.session.userName;
         next();
