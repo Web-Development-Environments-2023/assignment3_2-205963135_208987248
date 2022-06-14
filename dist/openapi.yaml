@@ -10,23 +10,23 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-- url: "http://127.0.0.1:3000"
-- url: https://virtserver.swaggerhub.com/bitondor/API/1.0.0
-  description: SwaggerHub API Auto Mocking
+  - url: "http://127.0.0.1:3000"
+  - url: https://virtserver.swaggerhub.com/bitondor/API/1.0.0
+    description: SwaggerHub API Auto Mocking
 # - url: https://virtserver.swaggerhub.com/MaorAndDana/API/1.0.0
 #   description: SwaggerHub API Auto Mocking
 tags:
-- name: User
-  description: Someone who registered to the website
-- name: recipes
-  description: Object that includes the fixed attributes - instructions, ingredients and more
-- name: Meal
-  description: Object that contains atleast one recipe.
+  - name: User
+    description: Someone who registered to the website
+  - name: recipes
+    description: Object that includes the fixed attributes - instructions, ingredients and more
+  - name: Meal
+    description: Object that contains atleast one recipe.
 paths:
   /register:
     post:
       tags:
-      - auth
+        - auth
       summary: Adds a new user to the system
       description: Adds a new user to the system
       requestBody:
@@ -34,7 +34,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: "#/components/schemas/Register"
       responses:
         "201":
           description: User created
@@ -45,7 +45,7 @@ paths:
   /login:
     post:
       tags:
-      - auth
+        - auth
       summary: Check if user is registered to the system
       description: Check if user is registered to the system
       requestBody:
@@ -53,16 +53,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: "#/components/schemas/Login"
       responses:
         "200":
           description: login succeeded
+          headers:
+            Set-Cookie:
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: session=87s97sdhgf279293f8w0e9
         "401":
           description: Username or Password incorrect
   /recipes/search:
     post:
       tags:
-      - recipes
+        - recipes
       summary: Search for recipe from existing corpus of recipes
       description: Search for recipe from existing corpus of recipes and return the numOfResults recipe (as the user instructed)
       requestBody:
@@ -70,7 +77,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Search'
+              $ref: "#/components/schemas/Search"
       responses:
         "200":
           description: return search results
@@ -79,7 +86,7 @@ paths:
   /recipes/perviewDetails:
     post:
       tags:
-      - recipes
+        - recipes
       summary: Get the preview details of the recipe
       description: Return for a given recipe his preview details - id, picture, recipe name, preparation time, popularity, vegan/vegaterian, gluten free, if the user watched this recipe before and if he saved it as a favorite.
       requestBody:
@@ -87,7 +94,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PreviewDatails'
+              $ref: "#/components/schemas/PreviewDatails"
       responses:
         "200":
           description: All the recipes preview details were return successfully.
@@ -95,8 +102,10 @@ paths:
           description: invalid input, object invalid
   /users/my:
     get:
+      security:
+        - cookieAuth: []
       tags:
-      - User
+        - User
       summary: Get all the recipes that the logged in user uploaded to the user's my recipes
       description: Return all the recipes that the logged in user uploaded to the user's my recipes
       responses:
@@ -104,9 +113,10 @@ paths:
           description: All the logged in user recipes were return successfully.
         "400":
           description: invalid input, object invalid
+
     post:
       tags:
-      - User
+        - User
       summary: save user recipe that the logged in user uploaded.
       description: save user recipe that the logged in user uploaded.
       requestBody:
@@ -114,7 +124,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SaveRecipe'
+              $ref: "#/components/schemas/SaveRecipe"
       responses:
         "201":
           description: recipe was save sucessfully
@@ -123,7 +133,7 @@ paths:
   /users/favorite:
     get:
       tags:
-      - User
+        - User
       summary: Get all the favorite recipes that the logged in user liked
       description: Return all the favorite recipes that the logged in user liked
       responses:
@@ -133,7 +143,7 @@ paths:
           description: invalid input, object invalid
     post:
       tags:
-      - User
+        - User
       summary: Add new favorite recipe to the logged in user
       description: Adding new favorite recipe to the system with insturction and details - picture, recipe name, preparation time, popularity, vegan/vegaterian, gluten free, if the user watched this recipe before and if he saved it as a favorite and the logged in username.
       requestBody:
@@ -141,7 +151,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SaveRecipe'
+              $ref: "#/components/schemas/SaveRecipe"
       responses:
         "201":
           description: Adding favorite recipe to the logged in user was successful
@@ -150,7 +160,7 @@ paths:
   /users/family:
     get:
       tags:
-      - User
+        - User
       summary: Get all the family recipes that the logged in user uploaded
       description: Return all the family recipes that the logged in user uploaded
       responses:
@@ -160,7 +170,7 @@ paths:
           description: invalid input, object invalid
     post:
       tags:
-      - User
+        - User
       summary: Add new family recipe to the system
       description: Adding new family recipe to the system with insturction and details - picture, recipe name, preparation time, popularity, vegan/vegaterian, gluten free, if the user watched this recipe before and if he saved it as a favorite and the logged in username.
       requestBody:
@@ -168,7 +178,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SaveRecipe'
+              $ref: "#/components/schemas/SaveRecipe"
       responses:
         "201":
           description: Adding family recipe to logged in user was successful
@@ -177,7 +187,7 @@ paths:
   /recipes/random:
     get:
       tags:
-      - recipes
+        - recipes
       summary: Get 3 random recipes from the recipes corpus
       description: return 3 random recipes from the recipes corpus
       responses:
@@ -188,7 +198,7 @@ paths:
   /users/watch:
     get:
       tags:
-      - User
+        - User
       summary: Get 3 last watched recipes by the logged in user from the recipes corpus
       description: return 3 last watched recipes by the logged in user from the recipes
       operationId: get3LastWatchedRecipes
@@ -200,7 +210,7 @@ paths:
   /recipes/details:
     post:
       tags:
-      - recipes
+        - recipes
       summary: Get the all the details of the recipe
       description: Return for a given recipe all the details - preview details (id, picture, recipe name, preparation time, popularity, vegan/vegaterian, gluten free, if the user watched this recipe before and if he saved it as a favorite) instuctions, ingrediants and amount, number of units.
       requestBody:
@@ -208,7 +218,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AllDatails'
+              $ref: "#/components/schemas/AllDatails"
       responses:
         "200":
           description: All the recipes details were return successfully.
@@ -217,7 +227,7 @@ paths:
   /recipes/changeMealOrder:
     post:
       tags:
-      - recipes
+        - recipes
       summary: change the order of recipes meal
       description: change the order of recipes meal
       requestBody:
@@ -225,7 +235,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/changeRecipe'
+              $ref: "#/components/schemas/changeRecipe"
       responses:
         "200":
           description: The recipes order changed successfully.
@@ -234,7 +244,7 @@ paths:
   /recipes/addMeal:
     post:
       tags:
-      - recipes
+        - recipes
       summary: add recipe to a meal
       description: add recipe to a meal per userName
       requestBody:
@@ -242,7 +252,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/addRecipeToMeal'
+              $ref: "#/components/schemas/addRecipeToMeal"
       responses:
         "200":
           description: The recipes added successfully.
@@ -251,7 +261,7 @@ paths:
   /recipes/deleteMeal:
     post:
       tags:
-      - recipes
+        - recipes
       summary: delete recipe from a meal
       description: delete recipe from a meal per userName
       requestBody:
@@ -259,7 +269,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/changeRecipe'
+              $ref: "#/components/schemas/changeRecipe"
       responses:
         "200":
           description: The recipes deleted successfully.
@@ -268,7 +278,7 @@ paths:
   /recipes/analyzedInstructions:
     post:
       tags:
-      - recipes
+        - recipes
       summary: get the analyzed instruction from a recipe
       description: get the analyzed instruction from a recipe
       requestBody:
@@ -276,7 +286,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/analyzedInstructions'
+              $ref: "#/components/schemas/analyzedInstructions"
       responses:
         "200":
           description: analyzed instruction return successfully.
@@ -286,13 +296,13 @@ components:
   schemas:
     Register:
       required:
-      - country
-      - email
-      - firstName
-      - lastName
-      - password
-      - passwordConfirmation
-      - username
+        - country
+        - email
+        - firstName
+        - lastName
+        - password
+        - passwordConfirmation
+        - username
       type: object
       properties:
         username:
@@ -319,8 +329,8 @@ components:
           example: maordana@gmail.com
     Login:
       required:
-      - password
-      - username
+        - password
+        - username
       type: object
       properties:
         username:
@@ -331,8 +341,8 @@ components:
           example: Aa123456
     Search:
       required:
-      - numberSearch
-      - querySearch
+        - numberSearch
+        - querySearch
       type: object
       properties:
         numberSearch:
@@ -351,18 +361,18 @@ components:
           example: gluten
     SaveRecipe:
       required:
-      - analyzedInstructions
-      - glutenFree
-      - ingredients
-      - insturctions
-      - picture
-      - popularity
-      - preparationTime
-      - recipeName
-      - servings
-      - username
-      - vegan
-      - vegeterain
+        - analyzedInstructions
+        - glutenFree
+        - ingredients
+        - insturctions
+        - picture
+        - popularity
+        - preparationTime
+        - recipeName
+        - servings
+        - username
+        - vegan
+        - vegeterain
       type: object
       properties:
         insturctions:
@@ -404,22 +414,22 @@ components:
             type: string
     PreviewDatails:
       required:
-      - recipeIdList
+        - recipeIdList
       type: object
       properties:
         recipeIdList:
           type: array
           example:
-          - "663559"
-          - "642582"
-          - "655705"
-          - "652100"
+            - "663559"
+            - "642582"
+            - "655705"
+            - "652100"
           items:
             type: string
     AllDatails:
       required:
-      - recipeId
-      - userName
+        - recipeId
+        - userName
       type: object
       properties:
         recipeId:
@@ -431,8 +441,8 @@ components:
 
     changeRecipe:
       required:
-      - recipeAndOrderList
-      - userName
+        - recipeAndOrderList
+        - userName
       type: object
       properties:
         userName:
@@ -440,16 +450,16 @@ components:
         recipeAndOrderList:
           type: array
           example:
-          - recipeId: "663559"
-            orderRecipe: 0
-          - recipeId: "642582"
-            orderRecipe: 1
+            - recipeId: "663559"
+              orderRecipe: 0
+            - recipeId: "642582"
+              orderRecipe: 1
           items:
             type: string
     addRecipeToMeal:
       required:
-      - recipeId
-      - userName
+        - recipeId
+        - userName
       type: object
       properties:
         userName:
@@ -458,8 +468,13 @@ components:
           type: string
     analyzedInstructions:
       required:
-      - recipeId
+        - recipeId
       type: object
       properties:
         recipeId:
           type: string
+    securitySchemes:
+      cookieAuth: # arbitrary name for the security scheme; will be used in the "security" key later
+        type: apiKey
+        in: cookie
+        name: JSESSIONID
