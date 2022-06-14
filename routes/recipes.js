@@ -109,7 +109,7 @@ router.post("/search", async (req, res, next) => {
 /**
  * This path returns the analyzedInstructions of a recipe by its id
  */
- router.delete("/deletemeal", async (req, res, next) => {
+ router.post("/deletemeal", async (req, res, next) => {
   try {
     let recipeId = req.body.recipeId;
     let userName =  req.body.userName;
