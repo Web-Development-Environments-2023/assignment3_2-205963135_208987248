@@ -10,10 +10,11 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-- url: https://virtserver.swaggerhub.com/bitondor/API/1.0.0
-  description: SwaggerHub API Auto Mocking
-- url: https://virtserver.swaggerhub.com/MaorAndDana/API/1.0.0
-  description: SwaggerHub API Auto Mocking
+- url: "http://127.0.0.1:3000"
+# - url: https://virtserver.swaggerhub.com/bitondor/API/1.0.0
+#   description: SwaggerHub API Auto Mocking
+# - url: https://virtserver.swaggerhub.com/MaorAndDana/API/1.0.0
+#   description: SwaggerHub API Auto Mocking
 tags:
 - name: User
   description: Someone who registered to the website
@@ -417,18 +418,17 @@ components:
             type: string
     AllDatails:
       required:
-      - recipeIdList
+      - recipeId
+      - userName
       type: object
       properties:
-        recipeIdList:
-          type: array
-          example:
-          - "663559"
-          - "642582"
-          - "655705"
-          - "652100"
-          items:
-            type: string
+        recipeId:
+          type: string
+          example: "663559"
+        userName:
+          type: string
+          example: "maordana"
+
     changeRecipe:
       required:
       - recipeAndOrderList
