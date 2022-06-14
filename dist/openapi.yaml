@@ -375,6 +375,9 @@ components:
         - vegeterain
       type: object
       properties:
+        analyzedInstructions:
+          type: string
+          descreption: "step-by-step instructions"
         insturctions:
           type: string
           example: See in this link https://spoonacular.com/food-api/docs#Get-Analyzed-Recipe-Instructions
