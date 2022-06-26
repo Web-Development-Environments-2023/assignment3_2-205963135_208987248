@@ -176,6 +176,8 @@ async function searchRecipes(querySearch,numberSearch,cuisineSearch,dietSearch,i
             cuisine: cuisineSearch,
             diet: dietSearch,
             intolerance: intoleranceSearch,
+            fillIngredients: true,
+            addRecipeInformation: true,
             apiKey: process.env.spooncular_apiKey
         }
     });
