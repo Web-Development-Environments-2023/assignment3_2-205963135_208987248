@@ -166,4 +166,19 @@ router.get('/watch', async (req,res,next) => {
   }
 });
 
+router.get('/allwatched', async (req,res,next) => {
+  try{
+    const userName = req.session.userName;
+    const recipes_id = await user_utils.getAwllWatchedRecipes(userName);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipeId)); //extracting the recipe ids into array
+    let result = {
+      watched: recipes_id_array
+    }
+    res.status(200).send(result);
+  } catch(error){
+    next(error); 
+  }
+});
+
 module.exports = router;

@@ -8,7 +8,7 @@ async function markAsFavorite(userName, recipeId){
 }
 
 async function getFavoriteRecipes(userName){
-    const recipes_id = await DButils.execQuery(`select recipeId from danamaordb.MyFavoriteRecipes where userName='${userName}'`);
+    const recipes_id = await DButils.execQuery(`select recipeId from danamaordb.myfavoriterecipes where userName='${userName}'`);
     return recipes_id;
 }
 
@@ -51,6 +51,10 @@ async function get3WatchedRecipes(userName){
     const recipes_id = await DButils.execQuery(`select recipeId from danamaordb.Watchedlogs where userName='${userName}' order by watchedDateTime desc limit 3`);
     return recipes_id;
 }
+async function getAwllWatchedRecipes(userName){
+    const recipes_id = await DButils.execQuery(`select recipeId from danamaordb.Watchedlogs where userName='${userName}'`);
+    return recipes_id;
+}
 
 async function getAllUsers(){
     const allUsers = await DButils.execQuery('select * from danamaordb.users');
@@ -90,3 +94,4 @@ exports.getAllUsers = getAllUsers;
 exports.get3WatchedRecipes = get3WatchedRecipes
 exports.checkIfRecipeInUserFamily = checkIfRecipeInUserFamily
 exports.checkIfRecipeInUserMy = checkIfRecipeInUserMy
+exports.getAwllWatchedRecipes = getAwllWatchedRecipes
