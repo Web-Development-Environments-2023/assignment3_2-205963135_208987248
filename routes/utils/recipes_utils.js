@@ -213,10 +213,12 @@ async function getNumOfMealRecipeRows(userName){
 }
 
 async function addMealRecipes(userName, recipeId){
+    let instructions = await getAnalyzedInstructions(recipeId);
+    let numOfInstructions = instructions.data.length
     let meals = await DButils.execQuery(`select * from danamaordb.meals where userName='${userName}' and recipeId='${recipeId}'`);
     if(meals.length == 0){
         let num_of_rows = await getNumOfMealRecipeRows(userName);
-        await DButils.execQuery(`insert into danamaordb.meals (userName, recipeId, orderRecipe) values ('${userName}','${recipeId}', ${num_of_rows})`);
+        await DButils.execQuery(`insert into danamaordb.meals (userName, recipeId, orderRecipe, numberOfInstructions) values ('${userName}','${recipeId}', ${num_of_rows}, ${numOfInstructions})`);
         return true;
     }
     return false;
