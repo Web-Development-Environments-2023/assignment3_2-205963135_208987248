@@ -258,7 +258,7 @@ async function deleteMealRecipes(userName, recipeId){
 }
 
 async function getUserMeal(userName){
-    const meal = await DButils.execQuery(`select recipeId from danamaordb.meals where userName='${userName}' order by orderRecipe asc`);
+    const meal = await DButils.execQuery(`select recipeId, numberOfInstructions from danamaordb.meals where userName='${userName}' order by orderRecipe asc`);
     return meal;
 }
 
