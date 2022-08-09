@@ -126,4 +126,14 @@ router.post("/search", async (req, res, next) => {
   }
 });
 
+router.get("/meal", async (req, res, next) => {
+  try {
+    let userName =  req.body.userName;
+    let meal = await recipes_utils.getUserMeal(userName);
+    res.send(meal);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

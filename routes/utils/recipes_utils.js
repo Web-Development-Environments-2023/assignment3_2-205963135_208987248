@@ -255,6 +255,11 @@ async function deleteMealRecipes(userName, recipeId){
     await DButils.execQuery(`delete from danamaordb.meals where userName = '${userName}' and recipeId = '${recipeId}'`);
 }
 
+async function getUserMeal(userName){
+    const meal = await DButils.execQuery(`select recipeId from danamaordb.meals where userName='${userName}' order by orderRecipe asc`);
+    return meal;
+}
+
 exports.getLocalRecipesPreview = getLocalRecipesPreview;
 exports.getRecipeDetails = getRecipeDetails;
 exports.addRecipe = addRecipe;
@@ -270,6 +275,7 @@ exports.addMealRecipes = addMealRecipes;
 exports.getAnalyzedInstructions = getAnalyzedInstructions;
 exports.getAnalyzedInstructionsFromDB = getAnalyzedInstructionsFromDB;
 exports.deleteMealRecipes = deleteMealRecipes;
+exports.getUserMeal = getUserMeal;
 
 
 
