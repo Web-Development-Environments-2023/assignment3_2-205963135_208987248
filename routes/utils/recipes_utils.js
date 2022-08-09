@@ -214,7 +214,7 @@ async function getNumOfMealRecipeRows(userName){
 
 async function addMealRecipes(userName, recipeId){
     let instructions = await getAnalyzedInstructions(recipeId);
-    let numOfInstructions = instructions.data.length
+    let numOfInstructions = instructions.data[0].steps.length
     let meals = await DButils.execQuery(`select * from danamaordb.meals where userName='${userName}' and recipeId='${recipeId}'`);
     if(meals.length == 0){
         let num_of_rows = await getNumOfMealRecipeRows(userName);
