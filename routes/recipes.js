@@ -11,17 +11,26 @@ router.get("/", (req, res) => res.send("im here"));
  */
 router.post("/details", async (req, res, next) => {
   try {
-    let recipe_id = (req.body.recipeId).trim()
-    let user_name = (req.body.userName).trim()
+    let recipe_id = (req.body.recipeId)
+    let user_name = (req.body.userName)
     // console.log(user_name);
     const recipe = await recipes_utils.getRecipeDetails(recipe_id);
+    let analyzedInstructions;
+    if(recipe_id.toString().startsWith(user_name)){
+      analyzedInstructions =  await recipes_utils.getAnalyzedInstructionsFromDB(recipe_id);
+    }
+    else{
+      analyzedInstructions =  await recipes_utils.getAnalyzedInstructions(recipe_id);
+      analyzedInstructions = analyzedInstructions.data
+    }
+    recipe.analyzedInstructions = analyzedInstructions;
     res.send(recipe);
-    let analyzedInstructions =  await recipes_utils.getAnalyzedInstructions(recipe_id);
-    analyzedInstructions = analyzedInstructions.data[0]
     //todo add recipe to db and then to watched
-    await recipes_utils.addRecipe(recipe.id, recipe.glutenFree, recipe.instructions, recipe.image, recipe.popularity, recipe.readyInMinutes,
+    if(user_name != "guest" && !recipe_id.startsWith(user_name)){
+      await recipes_utils.addRecipe(recipe.id, recipe.glutenFree, recipe.instructions, recipe.image, recipe.popularity, recipe.readyInMinutes,
       recipe.title, recipe.vegan, recipe.vegetarian, recipe.servings, recipe.ingredients, analyzedInstructions)
     await user_utils.addWatchedRecipe(user_name, recipe_id);
+    }
   } catch (error) {
     next(error);
   }
@@ -118,6 +127,16 @@ router.post("/search", async (req, res, next) => {
     await recipes_utils.deleteMealRecipes(userName, recipeId);
     await recipes_utils.changeMealRecipes(userName, newRecipeAndOrderList);
     res.send("Recipe was deleted from meal successfully");
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/meal", async (req, res, next) => {
+  try {
+    let userName =  req.body.userName;
+    let meal = await recipes_utils.getUserMeal(userName);
+    res.send(meal);
   } catch (error) {
     next(error);
   }

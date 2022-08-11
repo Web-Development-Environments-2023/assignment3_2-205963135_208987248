@@ -292,6 +292,18 @@ paths:
           description: analyzed instruction return successfully.
         "400":
           description: invalid input, object invalid
+  /users/allwatched:
+    get:
+      tags:
+        - User
+      summary: Get all last watched recipes by the logged in user from the recipes corpus
+      description: return all last watched recipes by the logged in user from the recipes
+      operationId: getAllLastWatchedRecipes
+      responses:
+        "200":
+          description: all last watched recipes by the logged in user were returned successfully
+        "400":
+          description: invalid input, object invalid
 components:
   schemas:
     Register:

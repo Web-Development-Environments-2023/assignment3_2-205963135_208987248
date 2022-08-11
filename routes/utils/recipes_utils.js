@@ -23,9 +23,41 @@ async function getRecipeInformation(recipe_id) {
 
 
 async function getRecipeDetails(recipe_id) {
-    let recipe_info = await getRecipeInformation(recipe_id);
-    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, instructions, servings, extendedIngredients } = recipe_info.data;
-    //todo add extendedIngredients, servings
+    const parsed = parseInt(recipe_id);
+    let recipe_info;
+    let id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, instructions, servings, extendedIngredients;
+    if (isNaN(parsed)){
+        recipe_info = await getRecipeInformationLocal(recipe_id);
+        let data = recipe_info[0]
+        id = data.recipeId;
+        title = data.recipeName;
+        readyInMinutes = data.preparationTime;
+        image = data.picture;
+        aggregateLikes = data.popularity;
+        vegan = Boolean(data.vegan);
+        vegetarian = Boolean(data.vegetarian);
+        glutenFree = Boolean(data.glutenFree);
+        instructions = data.instructions;
+        servings = data.servings;
+        extendedIngredients = JSON.parse(data.ingredients);
+
+    }
+    else{
+        recipe_info = await getRecipeInformation(recipe_id);
+        let data = recipe_info.data
+        id = data.id;
+        title = data.title;
+        readyInMinutes = data.readyInMinutes;
+        image = data.image;
+        aggregateLikes = data.aggregateLikes;
+        vegan = data.vegan;
+        vegetarian = data.vegetarian;
+        glutenFree = data.glutenFree;
+        instructions = data.instructions;
+        servings = data.servings;
+        extendedIngredients = data.extendedIngredients;
+    }
+    
     return {
         id: id,
         title: title,
@@ -176,6 +208,8 @@ async function searchRecipes(querySearch,numberSearch,cuisineSearch,dietSearch,i
             cuisine: cuisineSearch,
             diet: dietSearch,
             intolerance: intoleranceSearch,
+            fillIngredients: true,
+            addRecipeInformation: true,
             apiKey: process.env.spooncular_apiKey
         }
     });
@@ -211,10 +245,12 @@ async function getNumOfMealRecipeRows(userName){
 }
 
 async function addMealRecipes(userName, recipeId){
+    let instructions = await getAnalyzedInstructions(recipeId);
+    let numOfInstructions = instructions.data[0].steps.length
     let meals = await DButils.execQuery(`select * from danamaordb.meals where userName='${userName}' and recipeId='${recipeId}'`);
     if(meals.length == 0){
         let num_of_rows = await getNumOfMealRecipeRows(userName);
-        await DButils.execQuery(`insert into danamaordb.meals (userName, recipeId, orderRecipe) values ('${userName}','${recipeId}', ${num_of_rows})`);
+        await DButils.execQuery(`insert into danamaordb.meals (userName, recipeId, orderRecipe, numberOfInstructions) values ('${userName}','${recipeId}', ${num_of_rows}, ${numOfInstructions})`);
         return true;
     }
     return false;
@@ -253,6 +289,11 @@ async function deleteMealRecipes(userName, recipeId){
     await DButils.execQuery(`delete from danamaordb.meals where userName = '${userName}' and recipeId = '${recipeId}'`);
 }
 
+async function getUserMeal(userName){
+    const meal = await DButils.execQuery(`select recipeId, numberOfInstructions from danamaordb.meals where userName='${userName}' order by orderRecipe asc`);
+    return meal;
+}
+
 exports.getLocalRecipesPreview = getLocalRecipesPreview;
 exports.getRecipeDetails = getRecipeDetails;
 exports.addRecipe = addRecipe;
@@ -268,6 +309,7 @@ exports.addMealRecipes = addMealRecipes;
 exports.getAnalyzedInstructions = getAnalyzedInstructions;
 exports.getAnalyzedInstructionsFromDB = getAnalyzedInstructionsFromDB;
 exports.deleteMealRecipes = deleteMealRecipes;
+exports.getUserMeal = getUserMeal;
 
 
 

@@ -52,8 +52,8 @@ router.post("/Login", async (req, res, next) => {
         `SELECT * FROM danamaordb.users WHERE username = '${req.body.username}'`
       )
     )[0];
-
-    if (!(req.body.password === user.UserPassword)) {
+    const result = await bcrypt.compare(req.body.password, user.UserPassword);
+    if (!result) {
       throw { status: 401, message: "Username or Password incorrect" };
     }
 
