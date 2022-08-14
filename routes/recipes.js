@@ -26,7 +26,7 @@ router.post("/details", async (req, res, next) => {
     recipe.analyzedInstructions = analyzedInstructions;
     res.send(recipe);
     //todo add recipe to db and then to watched
-    if(user_name != "guest" && !recipe_id.startsWith(user_name)){
+    if(user_name != "guest" && !recipe_id.toString().startsWith(user_name)){
       await recipes_utils.addRecipe(recipe.id, recipe.glutenFree, recipe.instructions, recipe.image, recipe.popularity, recipe.readyInMinutes,
       recipe.title, recipe.vegan, recipe.vegetarian, recipe.servings, recipe.ingredients, analyzedInstructions)
     await user_utils.addWatchedRecipe(user_name, recipe_id);
@@ -142,4 +142,13 @@ router.post("/meal", async (req, res, next) => {
   }
 });
 
+router.post("/deletemealrecipes", async (req, res, next) => {
+  try {
+    let userName =  req.body.userName;
+    await recipes_utils.deleteUserMealRecipes(userName);
+    res.send("All recips was deleted from meal successfully");
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;

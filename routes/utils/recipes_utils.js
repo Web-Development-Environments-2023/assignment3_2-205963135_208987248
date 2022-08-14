@@ -294,6 +294,10 @@ async function getUserMeal(userName){
     return meal;
 }
 
+async function deleteUserMealRecipes(userName){
+    await DButils.execQuery(`delete from danamaordb.meals where userName = '${userName}'`);
+}
+
 exports.getLocalRecipesPreview = getLocalRecipesPreview;
 exports.getRecipeDetails = getRecipeDetails;
 exports.addRecipe = addRecipe;
@@ -310,6 +314,7 @@ exports.getAnalyzedInstructions = getAnalyzedInstructions;
 exports.getAnalyzedInstructionsFromDB = getAnalyzedInstructionsFromDB;
 exports.deleteMealRecipes = deleteMealRecipes;
 exports.getUserMeal = getUserMeal;
+exports.deleteUserMealRecipes = deleteUserMealRecipes;
 
 
 
