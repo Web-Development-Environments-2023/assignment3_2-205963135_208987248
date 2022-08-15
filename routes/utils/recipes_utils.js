@@ -15,7 +15,7 @@ async function getRecipeInformation(recipe_id) {
     return await axios.get(`${api_domain}/${recipe_id}/information`, {
         params: {
             includeNutrition: false,
-            apiKey: process.env.spooncular_apiKey
+            apiKey: process.env.spooncular_apiKey || "237361477ebf4cafbb1af7df69581e3a"
         }
     });
 }
@@ -152,7 +152,7 @@ function extractPreviewRecipeDetails(recipes_info) {
 async function getRecipesPreview(recipes_ids_list) {
     let promises = [];
     recipes_ids_list.map((id) => {
-        promises.push(getRecipeInformation(id));
+        promises.push(getRecipeDetails(id));
     });
     let info_res = await Promise.all(promises);
     // info_res.map((recp)=>{console.log(recp.data)});
@@ -164,7 +164,7 @@ async function getRandomRecipes(){
     const response = await axios.get(`${api_domain}/random`,{
         params: {
             number: 12,
-            apiKey: process.env.spooncular_apiKey
+            apiKey: process.env.spooncular_apiKey || "237361477ebf4cafbb1af7df69581e3a"
         }
     });
     return response;
@@ -185,7 +185,7 @@ async function getRandomRecipes(){
     const response = await axios.get(`${api_domain}/random`,{
         params: {
             number: 12,
-            apiKey: process.env.spooncular_apiKey
+            apiKey: process.env.spooncular_apiKey || "237361477ebf4cafbb1af7df69581e3a"
         }
     });
     return response;
@@ -210,7 +210,7 @@ async function searchRecipes(querySearch,numberSearch,cuisineSearch,dietSearch,i
             intolerance: intoleranceSearch,
             fillIngredients: true,
             addRecipeInformation: true,
-            apiKey: process.env.spooncular_apiKey
+            apiKey: process.env.spooncular_apiKey || "237361477ebf4cafbb1af7df69581e3a"
         }
     });
     return response.data.results;
@@ -245,8 +245,18 @@ async function getNumOfMealRecipeRows(userName){
 }
 
 async function addMealRecipes(userName, recipeId){
-    let instructions = await getAnalyzedInstructions(recipeId);
-    let numOfInstructions = instructions.data[0].steps.length
+    const parsed = parseInt(recipeId);
+    let instructions;
+    let numOfInstructions;
+    if (isNaN(parsed)){
+        instructions = await getAnalyzedInstructionsFromDB(recipeId)
+        console.log(instructions);
+        numOfInstructions = instructions[0].steps.length
+    } else{
+        instructions = await getAnalyzedInstructions(recipeId); 
+        numOfInstructions = instructions.data[0].steps.length
+    }
+   
     let meals = await DButils.execQuery(`select * from danamaordb.meals where userName='${userName}' and recipeId='${recipeId}'`);
     if(meals.length == 0){
         let num_of_rows = await getNumOfMealRecipeRows(userName);
@@ -271,7 +281,7 @@ async function getAnalyzedInstructions(recipeId){
     const response = await axios.get(`${api_domain}/${recipeId}/analyzedInstructions`,{
         params: {
             stepBreakdown: true,
-            apiKey: process.env.spooncular_apiKey
+            apiKey: process.env.spooncular_apiKey || "237361477ebf4cafbb1af7df69581e3a"
         }
     });
     return response;

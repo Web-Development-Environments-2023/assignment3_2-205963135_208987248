@@ -18,6 +18,7 @@ router.post("/details", async (req, res, next) => {
     let analyzedInstructions;
     if(recipe_id.toString().startsWith(user_name)){
       analyzedInstructions =  await recipes_utils.getAnalyzedInstructionsFromDB(recipe_id);
+      analyzedInstructions = [analyzedInstructions]
     }
     else{
       analyzedInstructions =  await recipes_utils.getAnalyzedInstructions(recipe_id);

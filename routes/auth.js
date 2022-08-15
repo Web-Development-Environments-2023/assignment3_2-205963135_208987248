@@ -27,7 +27,7 @@ router.post("/Register", async (req, res, next) => {
     // add the new username
     let hash_password = bcrypt.hashSync(
       user_details.password,
-      parseInt(process.env.bcrypt_saltRounds)
+      parseInt(process.env.bcrypt_saltRounds || 13)
     );
     await DButils.execQuery(
       `INSERT INTO users VALUES ('${user_details.username}', '${hash_password}', '${user_details.firstname}', '${user_details.lastname}',

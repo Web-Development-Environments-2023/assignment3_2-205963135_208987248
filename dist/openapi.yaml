@@ -10,7 +10,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-  - url: "http://dm-recipes.cs.bgu.ac.il:3000"
+  - url: "https://dm-recipes.cs.bgu.ac.il"
   - url: https://virtserver.swaggerhub.com/bitondor/API/1.0.0
     description: SwaggerHub API Auto Mocking
 # - url: https://virtserver.swaggerhub.com/MaorAndDana/API/1.0.0

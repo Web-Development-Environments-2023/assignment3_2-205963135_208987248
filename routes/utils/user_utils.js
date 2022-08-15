@@ -12,16 +12,15 @@ async function getFavoriteRecipes(userName){
     return recipes_id;
 }
 
-async function saveFamilyRecipe(userName, recipeId){
-    let family = await DButils.execQuery(`select * from danamaordb.MyFamilyRecipes where userName='${userName}' and recipeId='${recipeId}'`);
-    if(family.length == 0){
-        await DButils.execQuery(`insert into danamaordb.MyFamilyRecipes (userName, recipeId) values ('${userName}','${recipeId}')`);
+// async function saveFamilyRecipe(userName, recipeId){
+//     let family = await DButils.execQuery(`select * from danamaordb.MyFamilyRecipes where userName='${userName}' and recipeId='${recipeId}'`);
+//     if(family.length == 0){
+//         await DButils.execQuery(`insert into danamaordb.MyFamilyRecipes (userName, recipeId) values ('${userName}','${recipeId}')`);
+//     }
+// }
 
-    }
-}
-
-async function getFamilyRecipes(userName){
-    const recipes_id = await DButils.execQuery(`select recipeId from danamaordb.MyFamilyRecipes where userName='${userName}'`);
+async function getFamilyRecipes(){
+    const recipes_id = await DButils.execQuery(`select recipeId from danamaordb.MyFamilyRecipes`);
     return recipes_id;
 }
 async function saveMyRecipe(userName, recipeId){
@@ -61,10 +60,10 @@ async function getAllUsers(){
     return allUsers;
 }
 
-async function getNumOfFamilyRecipeRows(userName){
-    const rowsCounter = await DButils.execQuery(`select count(*) as numberOfRows from danamaordb.MyFamilyRecipes where userName='${userName}'`);
-    return rowsCounter[0].numberOfRows;
-}
+// async function getNumOfFamilyRecipeRows(userName){
+//     const rowsCounter = await DButils.execQuery(`select count(*) as numberOfRows from danamaordb.MyFamilyRecipes where userName='${userName}'`);
+//     return rowsCounter[0].numberOfRows;
+// }
 
 async function getNumOfMyRecipeRows(userName){
     const rowsCounter = await DButils.execQuery(`select count(*) as numberOfRows from danamaordb.myrecipes where userName='${userName}'`);
@@ -82,10 +81,10 @@ async function checkIfRecipeInUserMy(userName, recipeId){
 }
 
 exports.getNumOfMyRecipeRows = getNumOfMyRecipeRows;
-exports.getNumOfFamilyRecipeRows = getNumOfFamilyRecipeRows;
+// exports.getNumOfFamilyRecipeRows = getNumOfFamilyRecipeRows;
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
-exports.saveFamilyRecipe = saveFamilyRecipe;
+// exports.saveFamilyRecipe = saveFamilyRecipe;
 exports.getFamilyRecipes = getFamilyRecipes;
 exports.saveMyRecipe = saveMyRecipe;
 exports.getMyRecipes = getMyRecipes;
