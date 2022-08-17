@@ -40,7 +40,6 @@ async function getRecipeDetails(recipe_id) {
         instructions = data.instructions;
         servings = data.servings;
         extendedIngredients = JSON.parse(data.ingredients);
-
     }
     else{
         recipe_info = await getRecipeInformation(recipe_id);
@@ -105,13 +104,14 @@ function extractPreviewRecipeDetails(recipes_info) {
             vegan,
             vegetarian,
             glutenFree,
+            popularity,
         } = data;
         return {
             id: id,
             title: title,
             image: image,
             readyInMinutes: readyInMinutes,
-            popularity: aggregateLikes,
+            popularity: aggregateLikes == undefined ? popularity : aggregateLikes,
             vegan: vegan,
             vegetarian: vegetarian,
             glutenFree: glutenFree
@@ -155,8 +155,6 @@ async function getRecipesPreview(recipes_ids_list) {
         promises.push(getRecipeDetails(id));
     });
     let info_res = await Promise.all(promises);
-    // info_res.map((recp)=>{console.log(recp.data)});
-    // console.log(info_res);
     return extractPreviewRecipeDetails(info_res);
   }
 
@@ -176,8 +174,6 @@ async function getLocalRecipesPreview(recipes_ids_list) {
         promises.push(getRecipeInformationLocal(id));
     });
     let info_res = await Promise.all(promises);
-    // info_res.map((recp)=>{console.log(recp.data)});
-    // console.log(info_res);
     return extractPreviewRecipeDetailsLocal(info_res);
   }
 

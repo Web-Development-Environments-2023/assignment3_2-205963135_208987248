@@ -13,12 +13,11 @@ router.post("/details", async (req, res, next) => {
   try {
     let recipe_id = (req.body.recipeId)
     let user_name = (req.body.userName)
-    // console.log(user_name);
     const recipe = await recipes_utils.getRecipeDetails(recipe_id);
     let analyzedInstructions;
-    if(recipe_id.toString().startsWith(user_name)){
+    const parsed = parseInt(recipe_id);
+    if(isNaN(parsed)){
       analyzedInstructions =  await recipes_utils.getAnalyzedInstructionsFromDB(recipe_id);
-      analyzedInstructions = [analyzedInstructions]
     }
     else{
       analyzedInstructions =  await recipes_utils.getAnalyzedInstructions(recipe_id);
@@ -26,8 +25,7 @@ router.post("/details", async (req, res, next) => {
     }
     recipe.analyzedInstructions = analyzedInstructions;
     res.send(recipe);
-    //todo add recipe to db and then to watched
-    if(user_name != "guest" && !recipe_id.toString().startsWith(user_name)){
+    if(user_name != "guest" && !isNaN(parsed)){
       await recipes_utils.addRecipe(recipe.id, recipe.glutenFree, recipe.instructions, recipe.image, recipe.popularity, recipe.readyInMinutes,
       recipe.title, recipe.vegan, recipe.vegetarian, recipe.servings, recipe.ingredients, analyzedInstructions)
     await user_utils.addWatchedRecipe(user_name, recipe_id);

@@ -324,7 +324,6 @@ components:
         - lastName
         - country
         - password
-        - passwordConfirmation
         - email
       properties:
         username:
@@ -342,9 +341,6 @@ components:
         password:
           type: string
           example: 'Aa123456'
-        passwordConfirmation:
-          type: string
-          example: 'Dana'
         email:
           type: string
           format: email
