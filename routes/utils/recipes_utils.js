@@ -246,7 +246,6 @@ async function addMealRecipes(userName, recipeId){
     let numOfInstructions;
     if (isNaN(parsed)){
         instructions = await getAnalyzedInstructionsFromDB(recipeId)
-        console.log(instructions);
         numOfInstructions = instructions[0].steps.length
     } else{
         instructions = await getAnalyzedInstructions(recipeId); 

@@ -42,7 +42,6 @@ router.post('/favorites', async (req,res,next) => {
 router.get('/favorites', async (req,res,next) => {
   try{
     const userName = req.session.userName;
-    let favorite_recipes = {};
     const recipes_id = await user_utils.getFavoriteRecipes(userName);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipeId)); //extracting the recipe ids into array

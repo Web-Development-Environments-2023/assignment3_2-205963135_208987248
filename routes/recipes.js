@@ -80,9 +80,7 @@ router.post("/search", async (req, res, next) => {
   }
 });
 
-/**
- * This path returns the analyzedInstructions of a recipe by its id
- */
+
  router.post("/changemealorder", async (req, res, next) => {
   try {
     let data = req.body.recipesAndOrderList;
@@ -95,9 +93,7 @@ router.post("/search", async (req, res, next) => {
   }
 });
 
-/**
- * This path returns the analyzedInstructions of a recipe by its id
- */
+
  router.post("/addmeal", async (req, res, next) => {
   try {
     let recipeId = req.body.recipeId;
@@ -114,9 +110,6 @@ router.post("/search", async (req, res, next) => {
   }
 });
 
-/**
- * This path returns the analyzedInstructions of a recipe by its id
- */
  router.post("/deletemeal", async (req, res, next) => {
   try {
     let recipeId = req.body.recipeId;
